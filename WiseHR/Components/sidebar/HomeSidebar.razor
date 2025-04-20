@@ -18,7 +18,7 @@
                 {
                     <MudNavLink Class="mud-nav-link"
                                 Match="NavLinkMatch.All"
-                                Icon="@Icons.Material.Filled.Dashboard"
+                                Icon="@(item.Name == "Calendar" ? Icons.Material.Filled.CalendarToday : Icons.Material.Filled.Dashboard)"
                                 Href="@item.Url"
                                 ActiveClass="mud-nav-link-active">
                         @if (DrawerOpen)
@@ -26,11 +26,9 @@
                             var displayName = item.Name.Replace("HIDE_", "");
                             <span>@displayName</span>
                         }
-
                     </MudNavLink>
                 }
             }
-
         }
         else if (!string.IsNullOrEmpty(errorMessage))
         {
@@ -40,11 +38,8 @@
         {
             <p>No menu items available.</p>
         }
-
     </MudNavMenu>
 </MudDrawer>
-
-
 
 @code {
     [Parameter]
@@ -61,8 +56,6 @@
         var token = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "authToken");
         Console.WriteLine($"Token from localStorage: {token ?? "null"}");
 
-
-
         var (role, error) = await AuthService.VerifyToken();
         Console.WriteLine($"Role: {role ?? "null"}, Error: {error ?? "null"}");
 
@@ -72,15 +65,21 @@
             Console.WriteLine($"Role: {role}, Menu Items Count: {accessibleMenuItems?.Count ?? 0}");
             Console.WriteLine($"Accessible URLs: {string.Join(", ", accessibleMenuItems.Select(i => i.Url))}");
 
+            // Add Calendar menu item only if it doesn't already exist
+            if (!accessibleMenuItems.Any(item => item.Name == "Calendar"))
+            {
+                accessibleMenuItems.Add(("Calendar", "/holidays"));
+            }
+
             var pagesToExclude = new List<string>
-                {
-                    "/confirm"
-                };
-                    accessibleMenuItems = accessibleMenuItems
-             .Where(item =>
-                 !pagesToExclude.Any(pattern =>
-                     Regex.IsMatch(item.Url, $"^{pattern}$", RegexOptions.IgnoreCase)))
-             .ToList();
+            {
+                "/confirm"
+            };
+            accessibleMenuItems = accessibleMenuItems
+                .Where(item =>
+                    !pagesToExclude.Any(pattern =>
+                        Regex.IsMatch(item.Url, $"^{pattern}$", RegexOptions.IgnoreCase)))
+                .ToList();
 
             if (accessibleMenuItems == null || accessibleMenuItems.Count == 0)
             {
@@ -108,19 +107,13 @@
         var currentUrl = NavigationManager.Uri.Replace(NavigationManager.BaseUri, "/").TrimEnd('/');
         Console.WriteLine($"Current URL: {currentUrl}");
         bool isAllowed = accessibleMenuItems.Any(item =>
-        Regex.IsMatch(currentUrl, item.Url, RegexOptions.IgnoreCase));
+            Regex.IsMatch(currentUrl, item.Url, RegexOptions.IgnoreCase));
 
         if (!isAllowed && currentUrl != "/")
         {
             Console.WriteLine($"Access denied to {currentUrl}. Redirecting to /home.");
             NavigationManager.NavigateTo("/");
         }
-        // var allowedUrls = accessibleMenuItems.Select(i => i.Url.TrimEnd('/')).ToList();
-        // if (!allowedUrls.Contains(currentUrl) && currentUrl != "/") Allow root if needed
-        // {
-        //     Console.WriteLine($"Access denied to {currentUrl}. Redirecting to /home.");
-        //     NavigationManager.NavigateTo("/home"); Redirect to default page
-        // }
     }
 
     private void HandleLocationChanged(object sender, LocationChangedEventArgs args)
