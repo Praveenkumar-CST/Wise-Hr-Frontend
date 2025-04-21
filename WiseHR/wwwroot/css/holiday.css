@@ -102,8 +102,9 @@ p {
 
 .snackbar {
     position: fixed;
-    top: 20px;
+    bottom: 20px;
     right: 20px;
+    transform: none; 
     padding: 10px 20px;
     border-radius: 12px;
     color: #000000;
@@ -113,6 +114,11 @@ p {
     transition: opacity 0.3s ease-in-out;
 }
 
+
 .snackbar.success {
     background-color: rgb(66, 200, 100);
+}
+
+.holiday-title {
+    font-size: 27px;
 }

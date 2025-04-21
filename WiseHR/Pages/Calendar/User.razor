@@ -1,10 +1,11 @@
-@page "/holidays"
+@page "/user"
 @inject HttpClient HttpClient
 @inject NavigationManager NavigationManager
 @implements IDisposable
 @using HolidayApp.Models
+@layout HomeLayout
 
-<h3>Holiday List</h3>
+<h3 class="holiday-title">Holiday List</h3>
 
 <div class="holiday-boxes">
     <div class="permanent-holidays">

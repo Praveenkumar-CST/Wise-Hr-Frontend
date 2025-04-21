@@ -18,9 +18,10 @@
                 {
                     <MudNavLink Class="mud-nav-link"
                                 Match="NavLinkMatch.All"
-                                Icon="@(item.Name == "Calendar" ? Icons.Material.Filled.CalendarToday : Icons.Material.Filled.Dashboard)"
+                                Icon="@(item.Name == "Holiday Calendar" ? Icons.Material.Filled.CalendarToday : Icons.Material.Filled.Dashboard)"
                                 Href="@item.Url"
-                                ActiveClass="mud-nav-link-active">
+                                ActiveClass="mud-nav-link-active"
+                                style="white-space: nowrap;">
                         @if (DrawerOpen)
                         {
                             var displayName = item.Name.Replace("HIDE_", "");
@@ -66,9 +67,9 @@
             Console.WriteLine($"Accessible URLs: {string.Join(", ", accessibleMenuItems.Select(i => i.Url))}");
 
             // Add Calendar menu item only if it doesn't already exist
-            if (!accessibleMenuItems.Any(item => item.Name == "Calendar"))
+            if (!accessibleMenuItems.Any(item => item.Name == "Holiday Calendar"))
             {
-                accessibleMenuItems.Add(("Calendar", "/holidays"));
+                accessibleMenuItems.Add(("Holiday Calendar", "/calendar"));
             }
 
             var pagesToExclude = new List<string>
@@ -88,7 +89,7 @@
             else
             {
                 errorMessage = null;
-                await RestrictNavigation(); // Check initial URL
+                await RestrictNavigation(); 
             }
         }
         else
@@ -98,7 +99,7 @@
             NavigationManager.NavigateTo("/l"); // Redirect to login if no role
         }
 
-        // Subscribe to location changes
+    
         NavigationManager.LocationChanged += HandleLocationChanged;
     }
 
