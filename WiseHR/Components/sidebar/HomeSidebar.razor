@@ -66,9 +66,12 @@
             Console.WriteLine($"Role: {role}, Menu Items Count: {accessibleMenuItems?.Count ?? 0}");
             Console.WriteLine($"Accessible URLs: {string.Join(", ", accessibleMenuItems.Select(i => i.Url))}");
 
-            // Add Calendar menu item only if it doesn't already exist
-            if (!accessibleMenuItems.Any(item => item.Name == "Holiday Calendar"))
+            
+            if (role =="Employee")
             {
+                accessibleMenuItems.Add(("Holiday Calendar", "/user"));
+            }
+            else{
                 accessibleMenuItems.Add(("Holiday Calendar", "/calendar"));
             }
 
